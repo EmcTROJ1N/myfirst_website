@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<h2>{{ the_title }}</h2>
+<h3>Введите ваш токен</h3>
+<h4>Страница может зависнуть, это нормально!</h4>
+<form method='POST' action= '{{ url }}'>
+<table>
+<p>Используйсте эту форму для ввода данных:</p>
+<tr><td>Введите ваш токен:</td><td><input name='token' type='TEXT'></td></tr>
+</table>
+<p>Когда будете готовы, нажмите на кнопку:</p>
+<p><input value='Готово!' type='SUBMIT'></p>
+<p></p>
+</form>
+
+{% endblock %}

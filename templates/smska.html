@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<h2>{{ title }}</h2>
+<form method='POST' action='/'>
+<p>{{ msg }}</p>
+<p>Когда будете готовы, нажмите на кнопку:</p>
+<p><input value='Вернуться' type='SUBMIT'></p>
+</form>
+
+{% endblock %}
