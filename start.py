@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, escape, redirect
+from flask import Flask, render_template, request, escape, redirect, session
 import vk
 from time import sleep
 from datetime import datetime
@@ -10,7 +10,17 @@ import requests as req
 
 app = Flask(__name__)
 
-
+database = {
+    'Admin': 
+    {
+        'login': 'Admin',
+        'password': 'super_passwd'
+    },
+    'Yarik': {
+        'login': 'Yarik',
+        'password': 'yapedik'
+    }
+}
 @app.route('/', methods=['POST', 'GET'])
 def hello():
     logging(
@@ -262,17 +272,22 @@ def start_find_day():
 
 @app.route('/viewlog')
 def view_the_logs():
-    contents = []
-    with open('data.log') as log:
-        for line in log:
-            contents.append([])
-            for item in line.split('|'):
-                contents[-1].append(escape(item))
-    titles = ('Время', 'IP', 'Браузер', 'ОС', 'Операция', 'Информация о запросе')
-    return render_template('viewlog.html',
-    title = 'Логи',
-    the_row_titles = titles,
-    the_data = contents)
+    if 'logged_in' in session:
+        contents = []
+        with open('data.log') as log:
+            for line in log:
+                contents.append([])
+                for item in line.split('|'):
+                    contents[-1].append(escape(item))
+        titles = ('Время', 'IP', 'Браузер', 'ОС', 'Операция', 'Информация о запросе')
+        return render_template('viewlog.html',
+        title = 'Логи',
+        the_row_titles = titles,
+        the_data = contents)
+    else:
+        return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='Кажись кто-то забыл авторизироаться!')
 
 
 def logging(operation, time):
@@ -301,12 +316,19 @@ def auto_online():
 
 @app.route('/auto_online_start', methods = ['POST'])
 def auto_online_start():
-    token = request.form['token']
-    session = vk.Session(access_token = token)
-    api = vk.API(session, v = "5.95")
-    while True:
-        exit = api.account.setOnline(voip = 0)
-        sleep(180)
+    try:
+        token = request.form['token']
+        session = vk.Session(access_token = token)
+        logging(operation = 'Auto_online',
+            time = datetime.today())
+        api = vk.API(session, v = "5.95")
+        while True:
+            exit = api.account.setOnline(voip = 0)
+            sleep(180)
+    except BaseException:
+        return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='В случае появления данного окна, вы ввели неверные данные')
 
 
 @app.route('/auto_status')
@@ -318,9 +340,16 @@ def auto_status():
 
 @app.route('/auto_status_start', methods = ['POST'])
 def start_auto_status():
-    while True:
-        startStatus(request.form['token'])
-        sleep(60)
+    try:
+        logging(operation = 'Auto_online',
+            time = datetime.today())       
+        while True:
+            startStatus(request.form['token'])
+            sleep(60)
+    except BaseException:
+        return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='В случае появления данного окна, вы ввели неверные данные')
 
 
 def startStatus(token):
@@ -357,6 +386,33 @@ def startStatus(token):
     else:
         print(f"Статус был обновлен")
 
+@app.route('/login')
+def login():
+    return render_template('login.html',
+    title = 'Авторизация')
 
+
+@app.route('/login_check', methods = ['POST'])
+def login_check():
+    if request.form['login'] == 'Admin':
+        if request.form['passwd'] == database['Admin']['password']:
+            session['logged_in'] = True
+            return redirect('/viewlog')
+    elif request.form['login'] == 'Yarik':
+        if request.form['passwd'] == database['Yarik']['password']:
+            session['logged_in'] = True
+            return redirect('/viewlog')
+    else:
+        return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='В случае появления данного окна, вы ввели неверные данные')
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in')
+    return redirect('/')
+
+
+app.secret_key = 'itisverysecretkey'
 if __name__ == '__main__':
     app.run()

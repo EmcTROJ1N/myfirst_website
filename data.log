@@ -1,12 +1,4 @@
-2020-04-20 12:39:06.795369|217.199.236.38|chrome|linux|Hello_page|ImmutableMultiDict([])|
-2020-04-20 12:45:08.729671|217.199.236.38|chrome|linux|Hello_page|ImmutableMultiDict([])|
-2020-04-20 12:46:02.611693|217.199.236.38|chrome|linux|Hello_page|ImmutableMultiDict([])|
-2020-04-20 13:33:54.718045|217.199.236.38|chrome|linux|Hello_page|ImmutableMultiDict([])|
-2020-04-20 13:35:22.014465|217.199.236.38|chrome|linux|Hello_page|ImmutableMultiDict([])|
-2020-04-20 13:36:23.361611|217.199.236.38|chrome|linux|Hello_page|ImmutableMultiDict([])|
-2020-04-20 13:36:29.330101|217.199.236.38|chrome|linux|Clear_wall|ImmutableMultiDict([('token', '6d888f1d79dd1b840f1d20a6905877c93e91bfcabd9b4ad1f5538a41d748673d9e9b515d8cc3f5f8f88ce')])|
-2020-04-20 13:36:34.436567|217.199.236.38|chrome|linux|Hello_page|ImmutableMultiDict([])|
-2020-04-20 13:43:15.702102|217.199.236.38|chrome|linux|Clear_wall|ImmutableMultiDict([('token', '6d888f1d79dd1b840f1d20a6905877c93e91bfcabd9b4ad1f5538a41d748673d9e9b515d8cc3f5f8f88ce')])|
-2020-04-20 13:43:17.546832|217.199.236.38|chrome|linux|Hello_page|ImmutableMultiDict([])|
-2020-04-20 13:43:22.597093|217.199.236.38|chrome|linux|Hello_page|ImmutableMultiDict([])|
-2020-04-20 13:44:20.705167|2020-04-20 13:44:25.892808|217.199.236.38|chrome|linux|Hello_page|ImmutableMultiDict([])|
+2020-04-20 18:48:58.992297|109.254.254.26|safari|iphone|Hello_page|ImmutableMultiDict([])|
+2020-04-20 18:52:52.972011|31.133.59.153|chrome|android|Hello_page|ImmutableMultiDict([])|
+2020-04-20 19:02:13.203691|217.199.236.38|chrome|windows|Auto_online|ImmutableMultiDict([('token', '8c1da662035bccf43716c668cfd2a9590c079a72a389c3a8bb4916ab367cc3cd0f6751b1994383dcbb81d')])|
+2020-04-20 19:02:31.058327|217.199.236.38|chrome|windows|Hello_page|ImmutableMultiDict([])|
