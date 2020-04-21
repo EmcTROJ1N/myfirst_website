@@ -10,17 +10,6 @@ import requests as req
 
 app = Flask(__name__)
 
-database = {
-    'Admin': 
-    {
-        'login': 'Admin',
-        'password': 'super_passwd'
-    },
-    'Yarik': {
-        'login': 'Yarik',
-        'password': 'yapedik'
-    }
-}
 @app.route('/', methods=['POST', 'GET'])
 def hello():
     logging(
@@ -394,18 +383,20 @@ def login():
 
 @app.route('/login_check', methods = ['POST'])
 def login_check():
-    if request.form['login'] == 'Admin':
-        if request.form['passwd'] == database['Admin']['password']:
-            session['logged_in'] = True
-            return redirect('/viewlog')
-    elif request.form['login'] == 'Yarik':
-        if request.form['passwd'] == database['Yarik']['password']:
-            session['logged_in'] = True
-            return redirect('/viewlog')
-    else:
-        return render_template('smska.html',
+    with open('accounts.log', 'r') as acc:
+        for i in acc:
+            login_passwd = i.split('|')
+            password = login_passwd[1][:-1]
+            if request.form['login'] == login_passwd[0]:
+                print(request.form['passwd'])
+                print(password)
+                if request.form['passwd'] == password:
+                    session['logged_in'] = True
+                    return redirect('/viewlog')
+    return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
                                msg='В случае появления данного окна, вы ввели неверные данные')
+
 
 @app.route('/logout')
 def logout():
