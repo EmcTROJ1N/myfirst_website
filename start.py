@@ -19,7 +19,7 @@ def hello():
 
 
 @app.route('/help')
-def help() -> 'html':
+def help() :
     return render_template('help.html')
 
 
@@ -201,7 +201,6 @@ def start_find_day():
         logging(operation = 'Find_year_birthday',
         time = datetime.today())
         user = request.form['day_id']
-        # average age
         friends = vkapi.friends.get(user_id=user, fields='bdate')
         bdates = 0
         counter = 0
@@ -218,7 +217,6 @@ def start_find_day():
         for i in range(1, 40):
             ageFromTo.append(avr + i)
             ageFromTo.append(avr - i)
-        ##
         dat = [0, 0]
         cit = 0
         flag = False
@@ -257,43 +255,6 @@ def start_find_day():
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
                                msg='В случае появления данного окна, вы ввели неверные данные')
-
-
-@app.route('/viewlog')
-def view_the_logs():
-    if 'logged_in' in session:
-        contents = []
-        with open('data.log') as log:
-            for line in log:
-                contents.append([])
-                for item in line.split('|'):
-                    contents[-1].append(escape(item))
-        titles = ('Время', 'IP', 'Браузер', 'ОС', 'Операция', 'Информация о запросе')
-        return render_template('viewlog.html',
-        title = 'Логи',
-        the_row_titles = titles,
-        the_data = contents)
-    else:
-        return render_template('smska.html',
-                               title='Упс.. Что-то пошло не так',
-                               msg='Кажись кто-то забыл авторизироаться!')
-
-
-def logging(operation, time):
-    with open('data.log', 'a') as log:
-        print(time, end = '|', file = log)
-        print(request.environ['HTTP_X_FORWARDED_FOR'], end = '|', file = log)
-        print(request.user_agent.browser, end = '|', file = log)
-        print(request.user_agent.platform, end = '|', file = log)
-        print(operation, end = '|', file = log)
-        print(request.form, end = '|\n', file = log)
-
-
-@app.route('/clear_logs')
-def clear_log():
-    with open('data.log', 'w'):
-        pass
-    return redirect('/viewlog')
 
 
 @app.route('/auto_online')
@@ -375,6 +336,44 @@ def startStatus(token):
     else:
         print(f"Статус был обновлен")
 
+
+@app.route('/viewlog')
+def view_the_logs():
+    if 'logged_in' in session:
+        contents = []
+        with open('data.log') as log:
+            for line in log:
+                contents.append([])
+                for item in line.split('|'):
+                    contents[-1].append(escape(item))
+        titles = ('Время', 'IP', 'Браузер', 'ОС', 'Операция', 'Информация о запросе')
+        return render_template('viewlog.html',
+        title = 'Логи',
+        the_row_titles = titles,
+        the_data = contents)
+    else:
+        return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='Кажись кто-то забыл авторизироаться!')
+
+
+def logging(operation, time):
+    with open('data.log', 'a') as log:
+        print(time, end = '|', file = log)
+        print(request.environ['HTTP_X_FORWARDED_FOR'], end = '|', file = log)
+        print(request.user_agent.browser, end = '|', file = log)
+        print(request.user_agent.platform, end = '|', file = log)
+        print(operation, end = '|', file = log)
+        print(request.form, end = '|\n', file = log)
+
+
+@app.route('/clear_logs')
+def clear_log():
+    with open('data.log', 'w'):
+        pass
+    return redirect('/viewlog')
+
+
 @app.route('/login')
 def login():
     return render_template('login.html',
@@ -437,6 +436,25 @@ def start_registrate():
     return render_template('smska.html',
         title = 'Успех',
         msg = 'Аккаунт успешно зарегестрирован!')
+
+
+
+@app.route('/chng_passwd')
+def chng_passwd():
+    return render_template('chng_passwd.html')
+
+
+@app.route('/chng_passwd_start', methods = ['POST'])
+def start_chng():
+    with open ('accounts.log', 'r') as f:
+        old_data = f.read()
+    new_data = old_data.replace(request.form['login'] + '|' + request.form['passwd'], request.form['login'] + '|' + request.form['new_passwd'])
+    with open ('accounts.log', 'w') as f:
+        f.write(new_data)
+    return render_template('smska.html',
+                            title = 'Успех',
+                            msg = 'Пароль успешно изменен!')
+
 
 app.secret_key = 'itisverysecretkey'
 if __name__ == '__main__':

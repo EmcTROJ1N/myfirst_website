@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Смена пароля пользователя</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+    </head>
+    <body>
+        <h2>Смена пароля пользователя:</h2>
+        <h3>Если вы попытаетесь изменить пароль несуществующего пользователя, ничего не произойдет</h3>
+        <form method='POST' action='/chng_passwd_start'>
+        <table>
+        <p>Используйсте эту форму для ввода данных:</p>
+        <tr><td>Введите логин пользователя:</td><td><input name='login' type='TEXT' width='60', value = 'Testing'></td></tr>
+        <tr><td>Введите пароль пользователя:</td><td><input name='passwd' type='TEXT', value = '15'></td></tr>
+        <tr><td>Введите новый пароль:</td><td><input name='new_passwd' type='TEXT', value = '10'></td></tr>
+        </table>
+        <p>Когда будете готовы, нажмите на кнопку:</p>
+        <p><input value='Готово!' type='SUBMIT'></p>
+        <p></p>
+        </form>
+    </body>
+</html>
