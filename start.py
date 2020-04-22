@@ -388,11 +388,9 @@ def login_check():
             login_passwd = i.split('|')
             password = login_passwd[1][:-1]
             if request.form['login'] == login_passwd[0]:
-                print(request.form['passwd'])
-                print(password)
                 if request.form['passwd'] == password:
                     session['logged_in'] = True
-                    return redirect('/viewlog')
+                    return redirect('/admin_panel')
     return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
                                msg='В случае появления данного окна, вы ввели неверные данные')
@@ -400,9 +398,45 @@ def login_check():
 
 @app.route('/logout')
 def logout():
-    session.pop('logged_in')
-    return redirect('/')
+    if 'logged_in' in session:
+        session.pop('logged_in')
+        return redirect('/')
+    else:
+        return render_template('smska.html',
+        title = 'Вы никуда и не входили',
+        msg = 'Могу порекомендовать выйти в окно!')
 
+
+
+@app.route('/admin_panel')
+def admin_panel():
+    if 'logged_in' in session:
+        return render_template('admin-panel.html',
+        title = 'Админ панель')
+    else:
+        return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='Кажись кто-то забыл авторизироаться!')
+
+@app.route('/registrate')
+def registrate():
+    return render_template('registrate.html')
+
+
+@app.route('/start_registrate', methods = ['POST'])
+def start_registrate():
+    with open('accounts.log', 'r') as acc:
+        for i in acc:
+            login_passwd = i.split('|')
+            if request.form['login'] == login_passwd[0]:
+                return render_template('smska.html',
+                                    title='Упс.. Что-то пошло не так',
+                                    msg='Такой логин уже существует!')
+    with open('accounts.log', 'a') as acc:
+        print(request.form['login'] + '|' + request.form['passwd'], file=acc)
+    return render_template('smska.html',
+        title = 'Успех',
+        msg = 'Аккаунт успешно зарегестрирован!')
 
 app.secret_key = 'itisverysecretkey'
 if __name__ == '__main__':
