@@ -457,7 +457,7 @@ def start_chng():
 
 
 @app.route('/rm_passwd')
-def rm_passwd():
+def chng_passwd():
     return render_template('rm_passwd.html')
 
 
@@ -465,14 +465,17 @@ def rm_passwd():
 def rm_chng():
     with open ('accounts.log', 'r') as f:
         old_data = f.read()
-        print(old_data)
-        new_data = old_data.replace(request.form['login'] + '|' + request.form['passwd'] + '\n', '')
-        print(new_data)
+    try:
+        new_data = old_data.remove(request.form['login'] + '|' + request.form['passwd'])
+    except:
+        return render_template('smska.html',
+                                title = 'Ошибка',
+                                msg = 'Такого пользователя не существут')
     with open ('accounts.log', 'w') as f:
         f.write(new_data)
     return render_template('smska.html',
                             title = 'Успех',
-                            msg = 'Аккаунт успешно удален!')
+                            msg = 'Пароль успешно изменен!')
 
 
 
