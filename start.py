@@ -411,8 +411,11 @@ def clear_log():
 
 @app.route('/login')
 def login():
-    return render_template('login.html',
-    title = 'Авторизация')
+    if 'logged_in' in session:
+        return redirect('/admin_panel')
+    else:
+        return render_template('login.html',
+        title = 'Авторизация')
 
 
 @app.route('/login_check', methods = ['POST'])
@@ -452,9 +455,11 @@ def admin_panel():
                                title='Упс.. Что-то пошло не так',
                                msg='Кажись кто-то забыл авторизироаться!')
 
-@app.route('/registrate')
+@app.route('/registrate', methods = ['POST', 'GET'])
 def registrate():
-    return render_template('registrate.html')
+    return render_template('registrate.html',
+    title = 'Регистрация нового пользователя',
+    url = '/start_registrate')
 
 
 @app.route('/start_registrate', methods = ['POST'])
@@ -493,7 +498,8 @@ def start_chng():
 
 @app.route('/rm_passwd')
 def rm_passwd():
-    return render_template('rm_passwd.html')
+    return render_template('rm_passwd.html',
+    title = 'Удаление аккаунта')
 
 
 @app.route('/rm_passwd_start', methods = ['POST'])
