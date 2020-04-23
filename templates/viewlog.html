@@ -3,7 +3,7 @@
 {% block body %}
 
 <h2>{{ the_title }}</h2>
-<table>
+<table class = 'table_blur'>
     <tr>
         {% for row_title in the_row_titles %}
             <th>{{row_title}}</th>
@@ -17,6 +17,6 @@
         </tr>
     {% endfor %}
 </table>
-<form action="/logout"><input value="Выйти" type="SUBMIT"><p></p></form>
+<form action="/admin_panel"><input value="Назад" type="SUBMIT"><p></p></form>
 
 {% endblock %}

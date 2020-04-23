@@ -5,18 +5,41 @@
 <h2>{{ the_title }}</h2>
 <h4>Страница может зависнуть, это нормально!</h4>
 <form method='POST' action='/spam_groups'>
-<table>
-<p>Используйсте эту форму для ввода данных:</p>
-<tr><td>Введите сообщение для спама:</td><td><input name='to_write' type='TEXT' width='60', value = 'Testing'></td></tr>
-<tr><td>Введите промежуток:</td><td><input name='timing' type='TEXT', value = '15'></td></tr>
-<tr><td>Введите количество сообщений:</td><td><input name='k' type='TEXT', value = '10'></td></tr>
-<tr><td>Введите id группы:</td><td><input name='group_id' type='TEXT' width='60'></td></tr>
-<tr><td>Введите id записи:</td><td><input name='post_id' type='TEXT'></td></tr>
-<tr><td>Введите ваш токен:</td><td><input name='token' type='TEXT'></td></tr>
-</table>
-<p>Когда будете готовы, нажмите на кнопку:</p>
+
+
+<form method='POST' action= '{{ url }}'>
+     <div class="group">
+        <input type="text" name = 'to_write' required>
+        <span class="bar"></span>
+        <label>Введите сообщение</label>
+     </div>
+     <div class="group">
+        <input type="text" name = 'token' required>
+        <span class="bar"></span>
+        <label>Введите промежуток</label>
+     </div>
+     <div class="group">
+        <input type="text" name = 'k' required>
+        <span class="bar"></span>
+        <label>Количество сообщений<label>
+     </div>
+     <div class="group">
+        <input type="text" name = 'group_id' required>
+        <span class="bar"></span>
+        <label>ID группы</label>
+     </div>
+     <div class="group">
+        <input type="text" name = 'post_id' required>
+        <span class="bar"></span>
+        <label>ID поста</label>
+     </div>
+     <div class="group">
+        <input type="text" name = 'token' required>
+        <span class="bar"></span>
+        <label>Токен</label>
+     </div>
 <p><input value='Готово!' type='SUBMIT'></p>
-<p></p>
-</form>
+  </form>
+
 
 {% endblock %}

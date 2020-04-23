@@ -7,12 +7,19 @@
 <form method='POST' action= '{{ url }}'>
 <table>
 <p>Используйсте эту форму для ввода данных:</p>
-<tr><td>Введите ваш токен:</td><td><input name='token' type='TEXT'></td></tr>
-<tr><td>Введите айди того, чью дату рождения необходимо узнать:</td><td><input name='page_id' type='TEXT'></td></tr>
-</table>
-<p>Когда будете готовы, нажмите на кнопку:</p>
+
+<form method='POST' action= '/login_check'>
+     <div class="group">
+        <input type="text" name = 'token' required>
+        <span class="bar"> </span>
+        <label>Токен</label>
+     </div>
+     <div class="group">
+        <input type="text" name = 'page_id' required>
+        <span class="bar"></span>
+        <label>Айди того, чью дату надо узнать</label>
+     </div>
 <p><input value='Готово!' type='SUBMIT'></p>
-<p></p>
-</form>
+  </form>
 
 {% endblock %}

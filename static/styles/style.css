@@ -8,6 +8,7 @@ body {
   mbackground-size: 100%;
   argin-right:     10%;
   padding:          10px 10px 10px 10px;
+  background-size: 100%; /* Современные браузеры */
 }
 input[type=button], input[type=submit], input[type=reset] {
   background-color: #2eace68f;
@@ -17,6 +18,22 @@ input[type=button], input[type=submit], input[type=reset] {
   text-decoration: none;
   margin: 4px 2px;
   cursor: pointer;
+  text-decoration: none;
+  outline: none;
+  display: inline-block;
+  color: white;
+  padding: 20px 30px;
+  margin: 10px 20px;
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background-image: linear-gradient(to right, #9EEFE1 0%, #4830F0 51%, #9EEFE1 100%);
+  background-size: 200% auto;
+  box-shadow: 0 0 20px rgba(0,0,0,.1);
+  transition: .5s;
+}
+a:hover {background-position: right center;}
 }
 a {
   text-decoration:  none;
@@ -31,58 +48,134 @@ a img {
 h2 {
   font-size:        150%;
 }
-table {
-  margin-left:      20px;
-  margin-right:     20px;
-  caption-side:     bottom;
-  border-collapse:  collapse;
+
+.table_blur {
+  background: #f5ffff;
+  border-collapse: collapse;
+  text-align: left;
 }
-td, th {
-  padding:          5px;
-  text-align:       left;
+.table_blur th {
+  border-top: 1px solid #777777;
+  border-bottom: 1px solid #777777;
+  box-shadow: inset 0 1px 0 #999999, inset 0 -1px 0 #999999;
+  background: linear-gradient(#9595b6, #5a567f);
+  color: white;
+  padding: 10px 15px;
+  position: relative;
 }
-.copyright {
-  font-size:        75%;
-  font-style:       italic;
+.table_blur th:after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 25%;
+  height: 25%;
+  width: 100%;
+  background: linear-gradient(rgba(255, 255, 255, 0), rgba(255,255,255,.08));
 }
-.slogan {
-  font-size:        75%;
-  font-style:       italic;
+.table_blur tr:nth-child(odd) {
+  background: #ebf3f9;
 }
-.confirmentry {
-  font-weight:      600;
+.table_blur th:first-child {
+  border-left: 1px solid #777777;
+  border-bottom:  1px solid #777777;
+  box-shadow: inset 1px 1px 0 #999999, inset 0 -1px 0 #999999;
+}
+.table_blur th:last-child {
+  border-right: 1px solid #777777;
+  border-bottom:  1px solid #777777;
+  box-shadow: inset -1px 1px 0 #999999, inset 0 -1px 0 #999999;
+}
+.table_blur td {
+  border: 1px solid #e3eef7;
+  padding: 10px 15px;
+  position: relative;
+  transition: all 0.5s ease;
+}
+.table_blur tbody:hover td {
+  color: transparent;
+  text-shadow: 0 0 3px #a09f9d;
+}
+.table_blur tbody:hover tr:hover td {
+  color: #444444;
+  text-shadow: none;
 }
 
-/*** Tables ***/
-
-table {
-font-size:          1em;
-background-color:   #fafcff;
-border:             1px solid #909090;
-color:              #2a2a2a;
-padding:            5px 5px 2px;
-   }
-   .col1 { width: 60px; }
-   .coln { width: 60px; }
-}
-
-td, th {
-border:             thin dotted gray;
-
-}
 
 /*** Inputs ***/
-input[type=text] {
-  font-size:        115%;
-  width:            30em;
+
+
+label {
+  color: #999;
+  font-size: 18px;
+  position: absolute;
+  pointer-events: none;
+  left: 10px;
+  top: 15px;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
 }
-input[type=password] {
-  font-size:        115%;
-  width:            30em;
+
+/* active state */
+input:focus ~ label, input:valid ~ label {
+  top: -15px;
+  font-size: 14px;
+  color: #5264AE;
+}
+
+
+/* BOTTOM BARS ================================= */
+.bar {
+  position: relative;
+  display: block;
+  width: 320px;
+}
+.bar:before, .bar:after {
+  content: "";
+  height: 2px;
+  width: 0;
+  bottom: 0;
+  position: absolute;
+  background: #5264AE;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+.bar:before {
+  left: 50%;
+}
+.bar:after {
+  right: 50%;
+}
+
+/* active state */
+input:focus ~ .bar:before,
+input:focus ~ .bar:after {
+  width: 50%;
+}
+
+
+.group {
+  position: relative;
+  margin-bottom: 30px;
+}
+input[type = text] {
+  font-size: 16px;
+  padding: 10px;
+  display: block;
+  width: 300px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+}
+
+
+input:focus {
+  outline: none;
 }
 input[type=submit] {
-  font-size:        125%;
+  font-size:        160%;
 }
 select {
-  font-size:        125%;
+  font-size:        5%;
 }
