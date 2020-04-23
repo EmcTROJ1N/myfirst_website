@@ -1,15 +1,16 @@
 body {
-  font-family:      Verdana, Geneva, Arial, sans-serif;
+  font-family: Arial, "Times New Roman", sans-serif;
   font-size:        medium;
-  background-color: tan;
   margin-top:       5%;
   margin-bottom:    5%;
   margin-left:      10%;
-  margin-right:     10%;
+  background-image: url('https://w-dog.ru/wallpapers/13/7/470605069828164.jpg');
+  mbackground-size: 100%;
+  argin-right:     10%;
   padding:          10px 10px 10px 10px;
 }
 input[type=button], input[type=submit], input[type=reset] {
-  background-color: #bb8d51af;
+  background-color: #2eace68f;
   border: 1;
   color: white;
   padding: 16px 32px;
@@ -18,8 +19,8 @@ input[type=button], input[type=submit], input[type=reset] {
   cursor: pointer;
 }
 a {
-  text-decoration:  none; 
-  font-weight:      600; 
+  text-decoration:  none;
+  font-weight:      600;
 }
 a:hover {
   text-decoration:  underline;
@@ -49,7 +50,7 @@ td, th {
   font-style:       italic;
 }
 .confirmentry {
-  font-weight:      600; 
+  font-weight:      600;
 }
 
 /*** Tables ***/
@@ -60,11 +61,14 @@ background-color:   #fafcff;
 border:             1px solid #909090;
 color:              #2a2a2a;
 padding:            5px 5px 2px;
-border-collapse:    collapse;
+   }
+   .col1 { width: 60px; }
+   .coln { width: 60px; }
 }
 
 td, th {
 border:             thin dotted gray;
+
 }
 
 /*** Inputs ***/

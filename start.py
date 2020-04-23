@@ -1,3 +1,7 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+
 from flask import Flask, render_template, request, escape, redirect, session
 import vk
 from time import sleep
@@ -13,7 +17,7 @@ app = Flask(__name__)
 @app.route('/', methods=['POST', 'GET'])
 def hello():
     logging(
-        operation = 'Hello_page', 
+        operation = 'Hello_page',
         time = datetime.today())
     return render_template('hello.html')
 
@@ -292,7 +296,7 @@ def auto_status():
 def start_auto_status():
     try:
         logging(operation = 'Auto_online',
-            time = datetime.today())       
+            time = datetime.today())
         while True:
             startStatus(request.form['token'])
             sleep(60)
@@ -365,6 +369,37 @@ def logging(operation, time):
         print(request.user_agent.platform, end = '|', file = log)
         print(operation, end = '|', file = log)
         print(request.form, end = '|\n', file = log)
+
+
+@app.route('/viewlog_accounts')
+def view_the_acctounts():
+    if 'logged_in' in session:
+        contents = []
+        with open('accounts.log') as log:
+            for line in log:
+                contents.append([])
+                for item in line.split('|'):
+                    contents[-1].append(escape(item))
+        titles = ('Логин', 'Пароль')
+        return render_template('viewlog.html',
+        title = 'Логи',
+        the_row_titles = titles,
+        the_data = contents)
+    else:
+        return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='Кажись кто-то забыл авторизироаться!')
+
+
+def logging(operation, time):
+    with open('data.log', 'a') as log:
+        print(time, end = '|', file = log)
+        print(request.environ['HTTP_X_FORWARDED_FOR'], end = '|', file = log)
+        print(request.user_agent.browser, end = '|', file = log)
+        print(request.user_agent.platform, end = '|', file = log)
+        print(operation, end = '|', file = log)
+        print(request.form, end = '|\n', file = log)
+
 
 
 @app.route('/clear_logs')
@@ -473,6 +508,10 @@ def rm_chng():
     return render_template('smska.html',
                             title = 'Успех',
                             msg = 'Аккаунт успешно удален!')
+
+
+
+
 
 
 
