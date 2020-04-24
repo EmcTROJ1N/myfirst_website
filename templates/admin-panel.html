@@ -3,7 +3,9 @@
 <h2>{{ the_title }}</h2>
 <h3>Это страница админа</h3>
 
-<p>Используйсте эту форму для ввода данных:</p>
+<p>Логин: {{ login }}</p>
+<p>Пароль: {{ passwd }}</p>
+<p>Уровень: {{ lvl }}</p>
 <form action = '/viewlog'><p><input value='Посмотреть логи' type='SUBMIT'></p></form>
 <form action = '/clear_logs'><p><input value='Очистить логи' type='SUBMIT'></p></form>
 <form action = '/viewlog_accounts'><p><input value='Посмотреть список аккаунтов' type='SUBMIT'></p></form>

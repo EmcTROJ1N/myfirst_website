@@ -72,11 +72,13 @@ def start_auto_invite():
         time = datetime.today())
         return render_template('smska.html',
                                title='Успех',
-                               msg='Все заявки успешно приняты')
+                               msg='Все заявки успешно приняты',
+                               url = '/')
     except BaseException:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='В случае появления данного окна, вы ввели неверные данные')
+                               msg='В случае появления данного окна, вы ввели неверные данные',
+                               url = '/')
 
 
 @app.route('/delete_all_friends')
@@ -98,11 +100,13 @@ def start_delete():
         time = datetime.today())
         return render_template('smska.html',
                             title='Успех!',
-                            msg='Все друзья успешно удалены!')
+                            msg='Все друзья успешно удалены!',
+                            url = '/')
     except:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='В случае появления данного окна, вы ввели неверные данные')
+                               msg='В случае появления данного окна, вы ввели неверные данные',
+                               url = '/')
 
 
 @app.route('/wall_clear')
@@ -127,11 +131,13 @@ def start_clear_wall():
         time = datetime.today())
         return render_template('smska.html',
                                title='Успех!',
-                               msg='Все посты успешно удалены!')
+                               msg='Все посты успешно удалены!',
+                               url = '/')
     except BaseException:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='В случае появления данного окна, вы ввели неверные данные')
+                               msg='В случае появления данного окна, вы ввели неверные данные',
+                               url = '/')
 
 
 @app.route('/entry_spam_groups', methods=['POST', 'GET'])
@@ -156,11 +162,13 @@ def start_spam():
         time = datetime.today())
         return render_template('smska.html',
                                title='Успех!',
-                               msg='Все посты успешно удалены!')
+                               msg='Все посты успешно удалены!',
+                               url = '/')
     except BaseException:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='В случае появления данного окна, вы ввели неверные данные')
+                               msg='В случае появления данного окна, вы ввели неверные данные',
+                               url = '/')
 
 
 @app.route('/clear_CHS')
@@ -183,11 +191,13 @@ def start_clear_CHS():
         time = datetime.today())
         return render_template('smska.html',
                                title='Успех!',
-                               msg='Все друзья успешно разблокироавны!')
+                               msg='Все друзья успешно разблокироавны!',
+                               url = '/')
     except BaseException:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='В случае появления данного окна, вы ввели неверные данные')
+                               msg='В случае появления данного окна, вы ввели неверные данные',
+                               url = '/')
 
 
 @app.route('/entry_birthday')
@@ -229,7 +239,8 @@ def start_find_day():
             if len(info[0]['bdate']) > 5:
                 return render_template('smska.html',
                                        title='Успех!',
-                                       msg='Год рожедния: ' + str(info[0]['bdate'][-4:]))
+                                       msg='Год рожедния: ' + str(info[0]['bdate'][-4:]),
+                                       url = '/')
             dat = info[0]['bdate'].split('.')
         if 'city' in info[0].keys():
             cit = info[0]['city']['id']
@@ -251,14 +262,16 @@ def start_find_day():
                     if str(j['id']) == user:
                         return render_template('smska.html',
                                                title='Успех!',
-                                               msg='Год рожедния:' + str(i))
+                                               msg='Год рожедния:' + str(i),
+                                               url = '/')
                         flag = True
             if flag:
                 break
     except BaseException:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='В случае появления данного окна, вы ввели неверные данные')
+                               msg='В случае появления данного окна, вы ввели неверные данные',
+                               url = '/')
 
 
 @app.route('/auto_online')
@@ -282,7 +295,8 @@ def auto_online_start():
     except BaseException:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='В случае появления данного окна, вы ввели неверные данные')
+                               msg='В случае появления данного окна, вы ввели неверные данные',
+                               url = '/')
 
 
 @app.route('/auto_status')
@@ -303,7 +317,8 @@ def start_auto_status():
     except BaseException:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='В случае появления данного окна, вы ввели неверные данные')
+                               msg='В случае появления данного окна, вы ввели неверные данные',
+                               url = '/')
 
 
 def startStatus(token):
@@ -359,11 +374,13 @@ def view_the_logs():
         else:
             return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='Ваш уровень доступа не соответствует минимальному')
+                               msg='Ваш уровень доступа не соответствует минимальному',
+                               url = '/admin_panel')
     else:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='Кажись кто-то забыл авторизироаться!')
+                               msg='Кажись кто-то забыл авторизироаться!',
+                               url = '/')
 
 
 def logging(operation, time):
@@ -394,11 +411,13 @@ def view_the_acctounts():
         else:
             return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='Ваш уровень доступа не соответствует минимальному')
+                               msg='Ваш уровень доступа не соответствует минимальному',
+                               url = '/admin_panel')
     else:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='Кажись кто-то забыл авторизироаться!')
+                               msg='Кажись кто-то забыл авторизироаться!',
+                               url = '/')
 
 
 def logging(operation, time):
@@ -422,7 +441,8 @@ def clear_log():
         else:
             return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='Ваш уровень доступа не соответствует минимальному')
+                               msg='Ваш уровень доступа не соответствует минимальному',
+                               url = '/admin_panel')
 
 
 
@@ -449,10 +469,13 @@ def login_check():
                 if request.form['passwd'] == login_passwd[1]:
                     session['logged_in'] = True
                     session['lvl'] = lvl
+                    session['login'] = request.form['login']
+                    session['passwd'] = request.form['passwd']
                     return redirect('/admin_panel')
     return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='В случае появления данного окна, вы ввели неверные данные')
+                               msg='В случае появления данного окна, вы ввели неверные данные',
+                               url = '/login')
 
 
 @app.route('/logout')
@@ -462,24 +485,30 @@ def logout():
         return redirect('/')
         return render_template('smska.html',
         title = 'Вы никуда и не входили',
-        msg = 'Могу порекомендовать выйти в окно!')
+        msg = 'Могу порекомендовать выйти в окно!',
+        url = '/')
 
 
 
-@app.route('/admin_panel')
+@app.route('/admin_panel', methods = ['POST', 'GET'])
 def admin_panel():
     if 'logged_in' in session:
         if int(session['lvl']) >= 1:
             return render_template('admin-panel.html',
-            title = 'Админ панель')
+            title = 'Админ панель',
+            login = session['login'],
+            passwd = session['passwd'],
+            lvl = session['lvl'])
         else:
             return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='Ваш уровень доступа не соответствует минимальному')
+                               msg='Ваш уровень доступа не соответствует минимальному',
+                               url = '/')
     else:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='Кажись кто-то забыл авторизироаться!')
+                               msg='Кажись кто-то забыл авторизироаться!',
+                               url = '/')
 
 @app.route('/registrate', methods = ['POST', 'GET'])
 def registrate():
@@ -491,27 +520,36 @@ def registrate():
         else:
             return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='Ваш уровень доступа не соответствует минимальному')
+                               msg='Ваш уровень доступа не соответствует минимальному',
+                               url = '/admin_panel')
     else:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='Кажись кто-то забыл авторизироаться!')
+                               msg='Кажись кто-то забыл авторизироаться!',
+                               url = '/')
 
 
 @app.route('/start_registrate', methods = ['POST'])
 def start_registrate():
+    if int(request.form['lvl']) > 3:
+        return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='Такого уровня доступа не существует!',
+                               url = '/admin_panel')
     with open('accounts.log', 'r') as acc:
         for i in acc:
             login_passwd = i.split('|')
             if request.form['login'] == login_passwd[0]:
                 return render_template('smska.html',
                                     title='Упс.. Что-то пошло не так',
-                                    msg='Такой логин уже существует!')
+                                    msg='Такой логин уже существует!',
+                                    url = '/registrate')
     with open('accounts.log', 'a') as acc:
         print(request.form['login'] + '|' + request.form['passwd'] + '|' + request.form['lvl'], file = acc)
     return render_template('smska.html',
         title = 'Успех',
-        msg = 'Аккаунт успешно зарегестрирован!')
+        msg = 'Аккаунт успешно зарегестрирован!',
+        url = '/admin_panel')
 
 
 
@@ -523,11 +561,13 @@ def chng_passwd():
         else:
             return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='Ваш уровень доступа не соответствует минимальному')
+                               msg='Ваш уровень доступа не соответствует минимальному',
+                               url = '/admin_panel')
     else:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='Кажись кто-то забыл авторизироаться!')
+                               msg='Кажись кто-то забыл авторизироаться!',
+                               url = '/')
 
 @app.route('/chng_passwd_start', methods = ['POST'])
 def start_chng():
@@ -538,7 +578,8 @@ def start_chng():
         f.write(new_data)
     return render_template('smska.html',
                             title = 'Успех',
-                            msg = 'Пароль успешно изменен!')
+                            msg = 'Пароль успешно изменен!',
+                            url = '/admin_panel')
 
 
 @app.route('/rm_passwd', methods = ['POST', 'GET'])
@@ -551,11 +592,13 @@ def rm_passwd():
         else:
             return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='Ваш уровень доступа не соответствует минимальному')
+                               msg='Ваш уровень доступа не соответствует минимальному',
+                               url = '/admin_panel')
     else:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='Кажись кто-то забыл авторизироаться!')
+                               msg='Кажись кто-то забыл авторизироаться!',
+                               url = '/')
 
 
 @app.route('/rm_passwd_start', methods = ['POST', 'GET'])
@@ -569,7 +612,8 @@ def rm_chng():
         f.write(new_data)
     return render_template('smska.html',
                             title = 'Успех',
-                            msg = 'Аккаунт успешно удален!')
+                            msg = 'Аккаунт успешно удален!',
+                            url = '/admin_panel')
 
 @app.route('/chng_lvl')
 def chng_lvl():
@@ -579,11 +623,13 @@ def chng_lvl():
         else:
             return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='Ваш уровень доступа не соответствует минимальному')
+                               msg='Ваш уровень доступа не соответствует минимальному',
+                               url = '/admin_panel')
     else:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
-                               msg='Кажись кто-то забыл авторизироаться!')
+                               msg='Кажись кто-то забыл авторизироваться!',
+                               url = '/')
 
 
 @app.route('/chng_lvl_start', methods = ['POST'])
@@ -597,7 +643,8 @@ def chng_lvl_start():
         f.write(new_data)
     return render_template('smska.html',
                             title = 'Успех',
-                            msg = 'Уровень доступа успешно изменен')
+                            msg = 'Уровень доступа успешно изменен',
+                            url = '/admin_panel')
 
 app.secret_key = 'itisverysecretkey'
 if __name__ == '__main__':
