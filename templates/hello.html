@@ -39,10 +39,20 @@ background-color: #2eace68f;
   box-shadow: 0 0 20px rgba(0,0,0,.1);
   transition: .5s;
         }
+
+#bg {
+        position:fixed;
+        z-index: -1;
+        top:0;
+        left:0;
+        min-width:100%;
+        min-height:100%;
+}
         </style>
 </head>
 
-<body background = 'https://w-dog.ru/wallpapers/13/7/470605069828164.jpg'>
+<body>
+    <img src='https://w-dog.ru/wallpapers/13/7/470605069828164.jpg' id="bg">
     <div class="es-wrapper-color">
         <!--[if gte mso 9]>
 			<v:background xmlns:v="urn:schemas-microsoft-com:vml" fill="t">

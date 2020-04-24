@@ -1,14 +1,22 @@
+@import url(https://fonts.googleapis.com/css?family=Lora:400,700&subset=latin,cyrillic);
 body {
-  font-family: Arial, "Times New Roman", sans-serif;
+  font-family: Lora, "Times New Roman", sans-serif;
   font-size:        medium;
   margin-top:       5%;
   margin-bottom:    5%;
   margin-left:      10%;
-  background-image: url('https://w-dog.ru/wallpapers/13/7/470605069828164.jpg');
   mbackground-size: 100%;
   argin-right:     10%;
   padding:          10px 10px 10px 10px;
   background-size: 100%; /* Современные браузеры */
+}
+#bg {
+        position:fixed;
+        z-index: -1;
+        top:0;
+        left:0;
+        min-width:100%;
+        min-height:100%;
 }
 input[type=button], input[type=submit], input[type=reset] {
   background-color: #2eace68f;

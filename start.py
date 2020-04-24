@@ -351,10 +351,15 @@ def view_the_logs():
                 for item in line.split('|'):
                     contents[-1].append(escape(item))
         titles = ('Время', 'IP', 'Браузер', 'ОС', 'Операция', 'Информация о запросе')
-        return render_template('viewlog.html',
-        title = 'Логи',
-        the_row_titles = titles,
-        the_data = contents)
+        if int(session['lvl']) >= 2:
+            return render_template('viewlog.html',
+            title = 'Логи',
+            the_row_titles = titles,
+            the_data = contents)
+        else:
+            return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='Ваш уровень доступа не соответствует минимальному')
     else:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
@@ -380,11 +385,16 @@ def view_the_acctounts():
                 contents.append([])
                 for item in line.split('|'):
                     contents[-1].append(escape(item))
-        titles = ('Логин', 'Пароль')
-        return render_template('viewlog.html',
-        title = 'Логи',
-        the_row_titles = titles,
-        the_data = contents)
+        titles = ('Логин', 'Пароль', 'LVL доступа')
+        if int(session['lvl']) >= 2:
+            return render_template('viewlog.html',
+            title = 'Логи',
+            the_row_titles = titles,
+            the_data = contents)
+        else:
+            return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='Ваш уровень доступа не соответствует минимальному')
     else:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
@@ -404,15 +414,26 @@ def logging(operation, time):
 
 @app.route('/clear_logs')
 def clear_log():
-    with open('data.log', 'w'):
-        pass
-    return redirect('/viewlog')
+    if 'logged_in' in session:
+        if int(session['lvl']) >= 3:
+            with open('data.log', 'w'):
+                pass
+            return redirect('/viewlog')
+        else:
+            return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='Ваш уровень доступа не соответствует минимальному')
+
 
 
 @app.route('/login')
 def login():
     if 'logged_in' in session:
-        return redirect('/admin_panel')
+        if int(session['lvl']) >= 1:
+            return redirect('/admin_panel')
+        else:
+            return render_template('login.html',
+            title = 'Авторизация')
     else:
         return render_template('login.html',
         title = 'Авторизация')
@@ -423,10 +444,11 @@ def login_check():
     with open('accounts.log', 'r') as acc:
         for i in acc:
             login_passwd = i.split('|')
-            password = login_passwd[1][:-1]
+            lvl = login_passwd[2][:-1]
             if request.form['login'] == login_passwd[0]:
-                if request.form['passwd'] == password:
+                if request.form['passwd'] == login_passwd[1]:
                     session['logged_in'] = True
+                    session['lvl'] = lvl
                     return redirect('/admin_panel')
     return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
@@ -438,7 +460,6 @@ def logout():
     if 'logged_in' in session:
         session.pop('logged_in')
         return redirect('/')
-    else:
         return render_template('smska.html',
         title = 'Вы никуда и не входили',
         msg = 'Могу порекомендовать выйти в окно!')
@@ -448,8 +469,13 @@ def logout():
 @app.route('/admin_panel')
 def admin_panel():
     if 'logged_in' in session:
-        return render_template('admin-panel.html',
-        title = 'Админ панель')
+        if int(session['lvl']) >= 1:
+            return render_template('admin-panel.html',
+            title = 'Админ панель')
+        else:
+            return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='Ваш уровень доступа не соответствует минимальному')
     else:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
@@ -457,9 +483,19 @@ def admin_panel():
 
 @app.route('/registrate', methods = ['POST', 'GET'])
 def registrate():
-    return render_template('registrate.html',
-    title = 'Регистрация нового пользователя',
-    url = '/start_registrate')
+    if 'logged_in' in session:
+        if int(session['lvl']) >= 1:
+            return render_template('registrate.html',
+            title = 'Регистрация нового пользователя',
+            url = '/start_registrate')
+        else:
+            return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='Ваш уровень доступа не соответствует минимальному')
+    else:
+        return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='Кажись кто-то забыл авторизироаться!')
 
 
 @app.route('/start_registrate', methods = ['POST'])
@@ -472,7 +508,7 @@ def start_registrate():
                                     title='Упс.. Что-то пошло не так',
                                     msg='Такой логин уже существует!')
     with open('accounts.log', 'a') as acc:
-        print(request.form['login'] + '|' + request.form['passwd'], file=acc)
+        print(request.form['login'] + '|' + request.form['passwd'] + '|' + request.form['lvl'], file = acc)
     return render_template('smska.html',
         title = 'Успех',
         msg = 'Аккаунт успешно зарегестрирован!')
@@ -481,8 +517,17 @@ def start_registrate():
 
 @app.route('/chng_passwd')
 def chng_passwd():
-    return render_template('chng_passwd.html')
-
+    if 'logged_in' in session:
+        if int(session['lvl']) >= 1:
+            return render_template('chng_passwd.html')
+        else:
+            return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='Ваш уровень доступа не соответствует минимальному')
+    else:
+        return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='Кажись кто-то забыл авторизироаться!')
 
 @app.route('/chng_passwd_start', methods = ['POST'])
 def start_chng():
@@ -496,18 +541,29 @@ def start_chng():
                             msg = 'Пароль успешно изменен!')
 
 
-@app.route('/rm_passwd')
+@app.route('/rm_passwd', methods = ['POST', 'GET'])
 def rm_passwd():
-    return render_template('rm_passwd.html',
-    title = 'Удаление аккаунта')
+    if 'logged_in' in session:
+        if int(session['lvl']) >= 3:
+            return render_template('rm_passwd.html',
+            title = 'Удаление аккаунта',
+            url = '/rm_passwd_start')
+        else:
+            return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='Ваш уровень доступа не соответствует минимальному')
+    else:
+        return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='Кажись кто-то забыл авторизироаться!')
 
 
-@app.route('/rm_passwd_start', methods = ['POST'])
+@app.route('/rm_passwd_start', methods = ['POST', 'GET'])
 def rm_chng():
     with open ('accounts.log', 'r') as f:
         old_data = f.read()
         print(old_data)
-        new_data = old_data.replace(request.form['login'] + '|' + request.form['passwd'] + '\n', '')
+        new_data = old_data.replace(request.form['login'] + '|' + request.form['passwd'] + '|' + request.form['lvl'] + '\n', '')
         print(new_data)
     with open ('accounts.log', 'w') as f:
         f.write(new_data)
@@ -515,11 +571,33 @@ def rm_chng():
                             title = 'Успех',
                             msg = 'Аккаунт успешно удален!')
 
+@app.route('/chng_lvl')
+def chng_lvl():
+    if 'logged_in' in session:
+        if int(session['lvl']) >= 3:
+            return render_template('chng_lvl.html')
+        else:
+            return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='Ваш уровень доступа не соответствует минимальному')
+    else:
+        return render_template('smska.html',
+                               title='Упс.. Что-то пошло не так',
+                               msg='Кажись кто-то забыл авторизироаться!')
 
 
-
-
-
+@app.route('/chng_lvl_start', methods = ['POST'])
+def chng_lvl_start():
+    with open ('accounts.log', 'r') as f:
+        old_data = f.read()
+        print(old_data)
+        new_data = old_data.replace(request.form['login'] + '|' + request.form['passwd'] + '|' + request.form['lvl'] + '\n', request.form['login'] + '|' + request.form['passwd'] + '|' + request.form['new_lvl'] + '\n')
+        print(new_data)
+    with open ('accounts.log', 'w') as f:
+        f.write(new_data)
+    return render_template('smska.html',
+                            title = 'Успех',
+                            msg = 'Уровень доступа успешно изменен')
 
 app.secret_key = 'itisverysecretkey'
 if __name__ == '__main__':
