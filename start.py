@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-
-from flask import Flask, render_template, request, escape, redirect, session
+from flask import Flask, render_template, request, escape, redirect, session, copy_current_request_context
 import vk
 from time import sleep
 from datetime import datetime
@@ -11,6 +10,7 @@ import vk_api
 import urllib
 import json
 import requests as req
+from threading import Thread
 
 app = Flask(__name__)
 
@@ -274,7 +274,7 @@ def start_find_day():
                                url = '/')
 
 
-@app.route('/auto_online')
+@app.route('/auto_online', methods = ['POST', 'GET'])
 def auto_online():
     return render_template('entry_token.html',
     title = 'Вечный онлайн для вашей страницы ВК',
@@ -283,20 +283,30 @@ def auto_online():
 
 @app.route('/auto_online_start', methods = ['POST'])
 def auto_online_start():
-    try:
-        token = request.form['token']
-        session = vk.Session(access_token = token)
-        logging(operation = 'Auto_online',
-            time = datetime.today())
-        api = vk.API(session, v = "5.95")
-        while True:
-            exit = api.account.setOnline(voip = 0)
-            sleep(180)
-    except BaseException:
-        return render_template('smska.html',
-                               title='Упс.. Что-то пошло не так',
-                               msg='В случае появления данного окна, вы ввели неверные данные',
-                               url = '/')
+    @copy_current_request_context
+    def t_auto_online(token):
+        try:
+            time_now = datetime.today()
+            session = vk.Session(access_token = token)
+            logging(operation = 'Auto_online',
+                time = time_now)
+            api = vk.API(session, v = "5.95")
+            while True:
+                exit = api.account.setOnline(voip = 0)
+                sleep(180)
+                if time == datetime.today():
+                    break
+        except BaseException:
+            return render_template('smska.html',
+                                   title='Упс.. Что-то пошло не так',
+                                   msg='В случае появления данного окна, вы ввели неверные данные',
+                                   url = '/')
+    auto_online_thread = Thread(target = t_auto_online, args = (request.form['token'],))
+    auto_online_thread.start()
+    return render_template('smska.html',
+    title = 'Успех',
+    msg = 'Все работает, можете идти пить чай)',
+    url = '/')
 
 
 @app.route('/auto_status')
