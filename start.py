@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from flask import Flask, render_template, request, escape, redirect, session, copy_current_request_context
@@ -36,49 +36,57 @@ def auto_invite():
 
 @app.route('/auto_invite_start', methods=['POST', 'GET'])
 def start_auto_invite():
-    try:
-        vk = vk_api.VkApi(token=request.form['token'])
-        print("\nЗаявок в друзья: " +
-              str(vk.method("users.getFollowers", {"count": 1})["count"]) +
-              "\n")
-        id2 = 0
-        while True:
-            followers_count = vk.method(
-                "users.getFollowers", {
-                    "count": 1})["count"]
-            if followers_count > 0:
-                id = vk.method("users.getFollowers", {"count": 1})["items"][0]
-                if id != id2 or id2 == 0:
-                    id2 = id
-                    print("Новая заявка в друзья, id пользователя " + str(id))
-                    try:
-                        vk.method("friends.add", {"user_id": id})
-                        print(
-                            "Добавил пользователя c id " +
-                            str(id) +
-                            " в друзья\n")
-                    except BaseException:
+    @copy_current_request_context
+    def t_auto_invite(token):
+        try:
+            vk = vk_api.VkApi(token= token)
+            print("\nЗаявок в друзья: " +
+                  str(vk.method("users.getFollowers", {"count": 1})["count"]) +
+                  "\n")
+            id2 = 0
+            while True:
+                followers_count = vk.method(
+                    "users.getFollowers", {
+                        "count": 1})["count"]
+                if followers_count > 0:
+                    id = vk.method("users.getFollowers", {"count": 1})["items"][0]
+                    if id != id2 or id2 == 0:
+                        id2 = id
+                        print("Новая заявка в друзья, id пользователя " + str(id))
                         try:
-                            vk.method("account.ban", {"owner_id": id})
+                            vk.method("friends.add", {"user_id": id})
                             print(
-                                "Пользователь с id " +
+                                "Добавил пользователя c id " +
                                 str(id) +
-                                " добавлен в чёрный список\n")
+                                " в друзья\n")
                         except BaseException:
-                            break
-            else:
-                break
-        logging(operation = 'Auto_invite_friends',
-        time = datetime.today())
-        return render_template('smska.html',
-                               title='Успех',
-                               msg='Все заявки успешно приняты',
-                               url = '/')
-    except BaseException:
-        return render_template('smska.html',
-                               title='Упс.. Что-то пошло не так',
-                               msg='В случае появления данного окна, вы ввели неверные данные',
-                               url = '/')
+                            try:
+                                vk.method("account.ban", {"owner_id": id})
+                                print(
+                                    "Пользователь с id " +
+                                    str(id) +
+                                    " добавлен в чёрный список\n")
+                            except BaseException:
+                                break
+                else:
+                    break
+            logging(operation = 'Auto_invite_friends',
+            time = datetime.today())
+            return render_template('smska.html',
+                                   title='Успех',
+                                   msg='Все заявки успешно приняты',
+                                   url = '/')
+        except BaseException:
+            return render_template('smska.html',
+                                   title='Упс.. Что-то пошло не так',
+                                   msg='В случае появления данного окна, вы ввели неверные данные',
+                                   url = '/')
+    t_auto_accept = Thread(target = t_auto_invite, args = (request.form['token'],))
+    t_auto_accept.start()
+    return render_template('smska.html',
+    title = 'Успех',
+    msg = 'Все работает, можете идти пить чай)',
+    url = '/')
 
 
 @app.route('/delete_all_friends')
@@ -90,23 +98,31 @@ def deletefriends():
 
 @app.route('/delete_fr_start', methods=['POST', 'GET'])
 def start_delete():
-    try:
-        session = vk.Session(access_token=request.form['token'])
-        api = vk.API(session, scope='friends', v='5.62')
-        friends = api.friends.get()
-        for i in friends['items']:
-            api.friends.delete(user_id=i)
-        logging(operation = 'Delte_all_friends',
-        time = datetime.today())
-        return render_template('smska.html',
-                            title='Успех!',
-                            msg='Все друзья успешно удалены!',
-                            url = '/')
-    except:
-        return render_template('smska.html',
-                               title='Упс.. Что-то пошло не так',
-                               msg='В случае появления данного окна, вы ввели неверные данные',
-                               url = '/')
+    @copy_current_request_context
+    def t_start_delete(token):
+        try:
+            session = vk.Session(access_token= token)
+            api = vk.API(session, scope='friends', v='5.62')
+            friends = api.friends.get()
+            for i in friends['items']:
+                api.friends.delete(user_id=i)
+            logging(operation = 'Delte_all_friends',
+            time = datetime.today())
+            return render_template('smska.html',
+                                title='Успех!',
+                                msg='Все друзья успешно удалены!',
+                                url = '/')
+        except:
+            return render_template('smska.html',
+                                   title='Упс.. Что-то пошло не так',
+                                   msg='В случае появления данного окна, вы ввели неверные данные',
+                                   url = '/')
+    t_delte = Thread(target = t_start_delete, args = (request.form['token'],))
+    t_delte.start()
+    return render_template('smska.html',
+        title = 'Успех',
+        msg = 'Все работает, можете идти пить чай)',
+        url = '/')
 
 
 @app.route('/wall_clear')
@@ -118,26 +134,34 @@ def wall_clear():
 
 @app.route('/start_clear_wall', methods=['POST'])
 def start_clear_wall():
-    try:
-        session = vk.Session(access_token=request.form['token'])
-        api = vk.API(session, scope='wall', v='5.62')
-        mywall = api.wall.get()
-        page_id = api.users.get()
-        for i in range(mywall['count']):
-            api.wall.delete(
-                post_id=mywall['items'][i]['id'],
-                owner_id=page_id[0]['id'])
-        logging(operation = 'Clear_wall',
-        time = datetime.today())
-        return render_template('smska.html',
-                               title='Успех!',
-                               msg='Все посты успешно удалены!',
-                               url = '/')
-    except BaseException:
-        return render_template('smska.html',
-                               title='Упс.. Что-то пошло не так',
-                               msg='В случае появления данного окна, вы ввели неверные данные',
-                               url = '/')
+    @copy_current_request_context
+    def t_start_clear(token):
+        try:
+            session = vk.Session(access_token= token)
+            api = vk.API(session, scope='wall', v='5.62')
+            mywall = api.wall.get()
+            page_id = api.users.get()
+            for i in range(mywall['count']):
+                api.wall.delete(
+                    post_id=mywall['items'][i]['id'],
+                    owner_id=page_id[0]['id'])
+            logging(operation = 'Clear_wall',
+            time = datetime.today())
+            return render_template('smska.html',
+                                   title='Успех!',
+                                   msg='Все посты успешно удалены!',
+                                   url = '/')
+        except BaseException:
+            return render_template('smska.html',
+                                   title='Упс.. Что-то пошло не так',
+                                   msg='В случае появления данного окна, вы ввели неверные данные',
+                                   url = '/')
+    t_clear = Thread(target = t_start_clear, args = (request.form['token'],))
+    t_clear.start()
+    return render_template('smska.html',
+    title = 'Успех',
+    msg = 'Все работает, можете идти пить чай)',
+    url = '/')
 
 
 @app.route('/entry_spam_groups', methods=['POST', 'GET'])
@@ -148,27 +172,35 @@ def entry_spam_groups() -> 'html':
 
 @app.route('/spam_groups', methods=['POST', 'GET'])
 def start_spam():
-    try:
-        session = vk.Session(access_token=request.form['token'])
-        api = vk.API(session, scope='wall', v='5.62')
-        for i in range(int(request.form['k'])):
-            api.wall.createComment(
-                owner_id=str(
-                    '-' + request.form['group_id']),
-                post_id=request.form['post_id'],
-                message=request.form['to_write'])
-            sleep(int(request.form['timing']))
-        logging(operation = 'Spam_groups',
-        time = datetime.today())
-        return render_template('smska.html',
-                               title='Успех!',
-                               msg='Все посты успешно удалены!',
-                               url = '/')
-    except BaseException:
-        return render_template('smska.html',
-                               title='Упс.. Что-то пошло не так',
-                               msg='В случае появления данного окна, вы ввели неверные данные',
-                               url = '/')
+    @copy_current_request_context
+    def t_spam(token):
+        try:
+            session = vk.Session(access_token=request.form['token'])
+            api = vk.API(session, scope='wall', v='5.62')
+            for i in range(int(request.form['k'])):
+                api.wall.createComment(
+                    owner_id=str(
+                        '-' + request.form['group_id']),
+                    post_id=request.form['post_id'],
+                    message=request.form['to_write'])
+                sleep(int(request.form['timing']))
+            logging(operation = 'Spam_groups',
+            time = datetime.today())
+            return render_template('smska.html',
+                                   title='Успех!',
+                                   msg='Все посты успешно удалены!',
+                                   url = '/')
+        except BaseException:
+            return render_template('smska.html',
+                                   title='Упс.. Что-то пошло не так',
+                                   msg='В случае появления данного окна, вы ввели неверные данные',
+                                   url = '/')
+    t_start_spam = Thread(target = t_spam, args = (request.form['token'],))
+    t_start_spam.start()
+    return render_template('smska.html',
+    title = 'Успех',
+    msg = 'Все работает, можете идти пить чай)',
+    url = '/')
 
 
 @app.route('/clear_CHS')
@@ -180,24 +212,33 @@ def entry_clear_CHS():
 
 @app.route('/clear_CHS_start', methods=['POST'])
 def start_clear_CHS():
-    try:
-        session = vk.Session(access_token=request.form['token'])
-        api = vk.API(session, scope='friends', v='5.62')
+    @copy_current_request_context
+    def t_clear_CHS(token):
+        try:
+            session = vk.Session(access_token=token)
+            api = vk.API(session, scope='friends', v='5.62')
 
-        banned = api.account.getBanned()
-        for i in range(banned['count']):
-            api.account.unban(owner_id=banned['items'][i]['id'])
-        logging(operation = 'clear_my_Black_List',
-        time = datetime.today())
-        return render_template('smska.html',
-                               title='Успех!',
-                               msg='Все друзья успешно разблокироавны!',
-                               url = '/')
-    except BaseException:
-        return render_template('smska.html',
-                               title='Упс.. Что-то пошло не так',
-                               msg='В случае появления данного окна, вы ввели неверные данные',
-                               url = '/')
+            banned = api.account.getBanned()
+            for i in range(banned['count']):
+                api.account.unban(owner_id=banned['items'][i]['id'])
+            logging(operation = 'clear_my_Black_List',
+            time = datetime.today())
+            return render_template('smska.html',
+                                   title='Успех!',
+                                   msg='Все друзья успешно разблокироавны!',
+                                   url = '/')
+        except BaseException:
+            return render_template('smska.html',
+                                   title='Упс.. Что-то пошло не так',
+                                   msg='В случае появления данного окна, вы ввели неверные данные',
+                                   url = '/')
+    t_clear = Thread(target = t_clear_CHS, args = (request.form['token'],))
+    t_clear.start()
+    return render_template('smska.html',
+    title = 'Успех',
+    msg = 'Все работает, можете идти пить чай)',
+    url = '/')
+
 
 
 @app.route('/entry_birthday')
@@ -209,70 +250,73 @@ def entry_birthday():
 
 @app.route('/start_find_birthday', methods=['POST'])
 def start_find_day():
-    try:
-        session = vk.Session(access_token=request.form['token'])
-        vkapi = vk.API(session, v='5.53')
-        logging(operation = 'Find_year_birthday',
-        time = datetime.today())
-        user = request.form['day_id']
-        friends = vkapi.friends.get(user_id=user, fields='bdate')
-        bdates = 0
-        counter = 0
-        if friends['count'] > 0:
-            for i in friends['items']:
-                if 'bdate' in i.keys():
-                    if len(i['bdate']) > 5:
-                        bdates += int(i['bdate'][-4:])
-                        counter += 1
-            avr = bdates // counter
-        else:
-            avr = 1990
-        ageFromTo = [avr]
-        for i in range(1, 40):
-            ageFromTo.append(avr + i)
-            ageFromTo.append(avr - i)
-        dat = [0, 0]
-        cit = 0
-        flag = False
-        info = vkapi.users.get(user_ids=user, fields='city,bdate')
-        if 'bdate' in info[0].keys():
-            if len(info[0]['bdate']) > 5:
-                return render_template('smska.html',
-                                       title='Успех!',
-                                       msg='Год рожедния: ' + str(info[0]['bdate'][-4:]),
-                                       url = '/')
-            dat = info[0]['bdate'].split('.')
-        if 'city' in info[0].keys():
-            cit = info[0]['city']['id']
-        fname = info[0]['first_name']
-        lname = info[0]['last_name']
-        for i in ageFromTo:
-            while True:
-                try:
-                    ans = vkapi.users.search(q=fname + ' ' + lname, count=1000,
-                                             birth_day=dat[0], birth_month=dat[1],
-                                             city=0, birth_year=i)
+    @copy_current_request_context
+    def t_find_birthday(token):
+        try:
+            session = vk.Session(access_token= token)
+            vkapi = vk.API(session, v='5.53')
+            logging(operation = 'Find_year_birthday',
+            time = datetime.today())
+            user = request.form['day_id']
+            friends = vkapi.friends.get(user_id=user, fields='bdate')
+            bdates = 0
+            counter = 0
+            if friends['count'] > 0:
+                for i in friends['items']:
+                    if 'bdate' in i.keys():
+                        if len(i['bdate']) > 5:
+                            bdates += int(i['bdate'][-4:])
+                            counter += 1
+                avr = bdates // counter
+            else:
+                avr = 1990
+            ageFromTo = [avr]
+            for i in range(1, 40):
+                ageFromTo.append(avr + i)
+                ageFromTo.append(avr - i)
+            dat = [0, 0]
+            cit = 0
+            flag = False
+            info = vkapi.users.get(user_ids=user, fields='city,bdate')
+            if 'bdate' in info[0].keys():
+                if len(info[0]['bdate']) > 5:
+                    return render_template('smska.html',
+                                           title='Успех!',
+                                           msg='Год рожедния: ' + str(info[0]['bdate'][-4:]),
+                                           url = '/')
+                dat = info[0]['bdate'].split('.')
+            if 'city' in info[0].keys():
+                cit = info[0]['city']['id']
+            fname = info[0]['first_name']
+            lname = info[0]['last_name']
+            for i in ageFromTo:
+                while True:
+                    try:
+                        ans = vkapi.users.search(q=fname + ' ' + lname, count=1000,
+                                                 birth_day=dat[0], birth_month=dat[1],
+                                                 city=0, birth_year=i)
+                        break
+                    except vk.exceptions.VkAPIError as text:
+                        if str(text)[:2] == '6.':
+                            sleep(1)
+                            continue
+                if ans['count'] > 0:
+                    for j in ans['items']:
+                        if str(j['id']) == user:
+                            return render_template('smska.html',
+                                                   title='Успех!',
+                                                   msg='Год рожедния:' + str(i),
+                                                   url = '/')
+                            flag = True
+                if flag:
                     break
-                except vk.exceptions.VkAPIError as text:
-                    if str(text)[:2] == '6.':
-                        sleep(1)
-                        continue
-            if ans['count'] > 0:
-                for j in ans['items']:
-                    if str(j['id']) == user:
-                        return render_template('smska.html',
-                                               title='Успех!',
-                                               msg='Год рожедния:' + str(i),
-                                               url = '/')
-                        flag = True
-            if flag:
-                break
-    except BaseException:
-        return render_template('smska.html',
-                               title='Упс.. Что-то пошло не так',
-                               msg='В случае появления данного окна, вы ввели неверные данные',
-                               url = '/')
-
+        except BaseException:
+            return render_template('smska.html',
+                                   title='Упс.. Что-то пошло не так',
+                                   msg='В случае появления данного окна, вы ввели неверные данные',
+                                   url = '/')
+    t_birthday = Thread(target = t_find_birthday, args = (request.form['token'],))
+    t_birthday.start()
 
 @app.route('/auto_online', methods = ['POST', 'GET'])
 def auto_online():
@@ -294,6 +338,7 @@ def auto_online_start():
             while True:
                 exit = api.account.setOnline(voip = 0)
                 sleep(180)
+                print(datetime.today())
                 if time == datetime.today():
                     break
         except BaseException:
@@ -321,9 +366,12 @@ def start_auto_status():
     try:
         logging(operation = 'Auto_online',
             time = datetime.today())
-        while True:
-            startStatus(request.form['token'])
-            sleep(60)
+        t_auto_status = Thread(target = startStatus, args = (request.form['token'],))
+        t_auto_status.start()
+        return render_template('smska.html',
+        title = 'Успех',
+        msg = 'Все работает, можете идти пить чай)',
+        url = '/')
     except BaseException:
         return render_template('smska.html',
                                title='Упс.. Что-то пошло не так',
@@ -332,38 +380,40 @@ def start_auto_status():
 
 
 def startStatus(token):
-    getCountry = req.get(f"https://api.vk.com/method/account.getProfileInfo?v=5.95&access_token={token}").json()
-    try:
-        city = getCountry["response"]["city"]["title"]
-    except KeyError:
-        print("У профиля не указан город, по умолчанию была выбрана Москва.")
-        city = "Москва"
+    while True:
+        getCountry = req.get(f"https://api.vk.com/method/account.getProfileInfo?v=5.95&access_token={token}").json()
+        try:
+            city = getCountry["response"]["city"]["title"]
+        except KeyError:
+            print("У профиля не указан город, по умолчанию была выбрана Москва.")
+            city = "Москва"
 
-    data = req.get("http://api.openweathermap.org/data/2.5/weather",
-    params = {"q": city,
-              "appid": "778d98cf94b6609bec655b872f24b907",
-              "units": "metric",
-              "lang": "ru"}).json()
-    try:
-        getLikes = req.get(f"https://api.vk.com/method/photos.get?album_id=profile&rev=1&extended=1&count=1&v=5.95&access_token={token}").json()
-        getLikes = getLikes["response"]["items"][0]["likes"]["count"]
-    except IndexError:
-        print("У профиля отсутсвует аватар или лайки.")
-        getLikes = 0
+        data = req.get("http://api.openweathermap.org/data/2.5/weather",
+        params = {"q": city,
+                  "appid": "778d98cf94b6609bec655b872f24b907",
+                  "units": "metric",
+                  "lang": "ru"}).json()
+        try:
+            getLikes = req.get(f"https://api.vk.com/method/photos.get?album_id=profile&rev=1&extended=1&count=1&v=5.95&access_token={token}").json()
+            getLikes = getLikes["response"]["items"][0]["likes"]["count"]
+        except IndexError:
+            print("У профиля отсутсвует аватар или лайки.")
+            getLikes = 0
 
-    getValuts = req.get("https://currate.ru/api/?get=rates&pairs=USDRUB,EURRUB&key=6780a6de85b0690a6e0f02e6fc5bfd4f").json().get("data")
+        getValuts = req.get("https://currate.ru/api/?get=rates&pairs=USDRUB,EURRUB&key=6780a6de85b0690a6e0f02e6fc5bfd4f").json().get("data")
 
-    today = datetime.today()
-    nowTime = today.strftime("%H:%M")
-    nowDate = today.strftime("%d.%m.%Y")
+        today = datetime.today()
+        nowTime = today.strftime("%H:%M")
+        nowDate = today.strftime("%d.%m.%Y")
 
-    statusSave = ("Время: {0} | Дата: {1} | Погода в '{2}': {3}℃ | Лайков на аве: {4}".format(nowTime, nowDate,
-        data["name"], str(data["main"]["temp"]), getLikes))
-    statusOut = req.get(f"https://api.vk.com/method/status.set?text={statusSave}&v=5.95&access_token={token}").json()
-    if statusOut.get("error", None):
-        print(f"Не удалось обновить статус сервер вернул неверный код ответа: {statusOut}")
-    else:
-        print(f"Статус был обновлен")
+        statusSave = ("Время: {0} | Дата: {1} | Погода в '{2}': {3}℃ | Лайков на аве: {4}".format(nowTime, nowDate,
+            data["name"], str(data["main"]["temp"]), getLikes))
+        statusOut = req.get(f"https://api.vk.com/method/status.set?text={statusSave}&v=5.95&access_token={token}").json()
+        if statusOut.get("error", None):
+            print(f"Не удалось обновить статус сервер вернул неверный код ответа: {statusOut}")
+        else:
+            print(f"Статус был обновлен")
+        sleep(60)
 
 
 @app.route('/viewlog')

@@ -53,8 +53,12 @@ a:hover {
 a img {
   border:           0;
 }
-h2 {
+h4, h3, h2 ,h1 {
   font-size:        150%;
+  color:white;
+}
+p {
+  color:white;
 }
 
 .table_blur {
@@ -176,6 +180,15 @@ input[type = text] {
   border: none;
   border-bottom: 1px solid #ccc;
 }
+input[type = password] {
+  font-size: 16px;
+  padding: 10px;
+  display: block;
+  width: 300px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+}
+
 
 
 input:focus {
